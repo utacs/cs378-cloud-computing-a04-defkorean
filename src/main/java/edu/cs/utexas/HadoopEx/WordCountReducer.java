@@ -18,7 +18,7 @@ public class WordCountReducer extends  Reducer<Text, Wrapper, Text, FloatWritabl
 
         
         for (Wrapper val : values) {
-            
+            System.out.println("Taxi ID: " + text.toString() + " Time: " + val.gettime().get() + " Total: " + val.gettotal().get());
             float time = val.gettime().get();
             float total = val.gettotal().get();
             String taxiID = text.toString();
@@ -40,8 +40,9 @@ public class WordCountReducer extends  Reducer<Text, Wrapper, Text, FloatWritabl
             float[] data = taxiData.get(taxi);
             float moneypmin = 0;
             if (data[0] != 0 && data[1] != 0) {
-                moneypmin = data[1] / (data[0] * 60);
+                moneypmin = data[1] / (data[0] / 60);
             }
+            System.out.println(taxi + " " + moneypmin);
             context.write(new Text(taxi), new FloatWritable(moneypmin));
         }
    }

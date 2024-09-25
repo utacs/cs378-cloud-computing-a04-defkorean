@@ -21,17 +21,18 @@ public class WordCountMapper extends Mapper<Object, Text, Text, Wrapper> {
 		
 		String[] fields = value.toString().split(",");
 		try {
-				String taxiID = fields[0].trim();
+				String driverID = fields[1].trim();
 				float time = Float.parseFloat(fields[4]);
 				float total = Float.parseFloat(fields[16]);
 
 
 
-				word.set(String.valueOf(taxiID));
-				context.write(word, new Wrapper(time, total));
-
+				word.set(String.valueOf(driverID));
+				Wrapper wrapper = new Wrapper(time, total);
+				context.write(word, wrapper);
 
 		} catch (Exception e) {
+			System.out.println("Error: " + e.getMessage());
 			return;
 		}
 	}
