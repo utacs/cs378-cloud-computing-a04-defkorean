@@ -33,20 +33,14 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
 
 				int pickupHour = pickupDateTime.getHour();
 				int dropOffHour = LocalDateTime.parse(dropoffTime, formatter).getHour();
-
+			
 				int pickUpErrors = 0;
 				int dropOffErrors = 0;
 
-				if (pickupLat == 0) {
+				if (pickupLat == 0 || pickupLong == 0) {
 					pickUpErrors++;
 				}
-				if (pickupLong == 0) {
-					pickUpErrors++;
-				}
-				if (dropOffLat == 0) {
-					dropOffErrors++;
-				}
-				if (dropOffLong == 0) {
+				if (dropOffLat == 0 || dropOffLong == 0) {
 					dropOffErrors++;
 				}
 				if (pickUpErrors > 0) {
