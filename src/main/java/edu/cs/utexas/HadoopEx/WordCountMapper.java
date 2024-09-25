@@ -49,12 +49,12 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
 				if (dropOffLong == 0) {
 					dropOffErrors++;
 				}
-				if (pickUpErrors > 1) {
+				if (pickUpErrors > 0) {
 					word.set(String.valueOf(pickupHour));
 					counter.set(pickUpErrors);
 					context.write(word, counter);
 				}
-				if (dropOffErrors > 1) {
+				if (dropOffErrors > 0) {
 					word.set(String.valueOf(dropOffHour));
 					counter.set(dropOffErrors);
 					context.write(word, counter);
