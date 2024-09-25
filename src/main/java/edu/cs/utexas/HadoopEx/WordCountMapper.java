@@ -23,10 +23,10 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
 		try {
 				String pickupTime = fields[2].trim();
 				String dropoffTime = fields[3].trim();
-				Float pickupLat = Float.parseFloat(fields[6].trim());
-				Float pickupLong = Float.parseFloat(fields[7].trim());
-				Float dropoffLat = Float.parseFloat(fields[8].trim());
-				Float dropoffLong = Float.parseFloat(fields[9].trim());
+				Float pickupLat = fields[6].trim().isEmpty() ? 0f : Float.parseFloat(fields[6].trim());
+				Float pickupLong = fields[7].trim().isEmpty() ? 0f : Float.parseFloat(fields[7].trim());
+				Float dropOffLat = fields[8].trim().isEmpty() ? 0f : Float.parseFloat(fields[8].trim());
+				Float dropOffLong = fields[9].trim().isEmpty() ? 0f : Float.parseFloat(fields[9].trim());
 				
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 				LocalDateTime pickupDateTime = LocalDateTime.parse(pickupTime, formatter);
@@ -43,10 +43,10 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
 				if (pickupLong == 0) {
 					pickUpErrors++;
 				}
-				if (dropoffLat == 0) {
+				if (dropOffLat == 0) {
 					dropOffErrors++;
 				}
-				if (dropoffLong == 0) {
+				if (dropOffLong == 0) {
 					dropOffErrors++;
 				}
 				if (pickUpErrors > 1) {
