@@ -5,14 +5,14 @@ import java.util.StringTokenizer;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
+public class WordCountMapper extends Mapper<Object, Text, Text, FloatWritable> {
 
 	// Create a counter and initialize with 1
-	private final IntWritable counter = new IntWritable(1);
+	private final FloatWritable counter = new FloatWritable(1);
 	// Create a hadoop text object to store words
 	private Text word = new Text();
 
@@ -21,53 +21,26 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
 		
 		String[] fields = value.toString().split(",");
 		try {
-				String pickupTime = fields[2].trim();
-				String dropoffTime = fields[3].trim();
 				Float pickupLat = fields[6].trim().isEmpty() ? 0f : Float.parseFloat(fields[6].trim());
 				Float pickupLong = fields[7].trim().isEmpty() ? 0f : Float.parseFloat(fields[7].trim());
 				Float dropOffLat = fields[8].trim().isEmpty() ? 0f : Float.parseFloat(fields[8].trim());
 				Float dropOffLong = fields[9].trim().isEmpty() ? 0f : Float.parseFloat(fields[9].trim());
-				
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-				LocalDateTime pickupDateTime = LocalDateTime.parse(pickupTime, formatter);
+				String taxiID = fields[0].trim();
+				float errors = 0;
 
-				int pickupHour = pickupDateTime.getHour();
-				int dropOffHour = LocalDateTime.parse(dropoffTime, formatter).getHour();
+				if (Math.abs(pickupLat) < 0.001 || Math.abs(pickupLong) < 0.001 || Math.abs(dropOffLat) < 0.001 || Math.abs(dropOffLong) < 0.001) {
+					errors = 1;
+				}
 
-				int pickUpErrors = 0;
-				int dropOffErrors = 0;
-
-				if (pickupLat == 0) {
-					pickUpErrors++;
-				}
-				if (pickupLong == 0) {
-					pickUpErrors++;
-				}
-				if (dropOffLat == 0) {
-					dropOffErrors++;
-				}
-				if (dropOffLong == 0) {
-					dropOffErrors++;
-				}
-				if (pickUpErrors > 1) {
-					word.set(String.valueOf(pickupHour));
-					counter.set(pickUpErrors);
-					context.write(word, counter);
-				}
-				if (dropOffErrors > 1) {
-					word.set(String.valueOf(dropOffHour));
-					counter.set(dropOffErrors);
-					context.write(word, counter);
-				}
+				// if (errors > 0) {
+				word.set(String.valueOf(taxiID));
+				counter.set(errors);
+				context.write(word, counter);
+				// }
 
 
 		} catch (Exception e) {
-			// Catch-all for any other exceptions
 			return;
 		}
-		// while (itr.hasMoreTokens()) {
-		// 	word.set(itr.nextToken());
-		// 	context.write(word, counter);
-		// }
 	}
 }

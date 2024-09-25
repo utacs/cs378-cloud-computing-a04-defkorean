@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.join.TupleWritable;
@@ -53,10 +53,10 @@ public class MapReduceTest {
 	 * @author kiat
 	 *
 	 */
-	public static class Reduce extends Reducer<LongWritable, TupleWritable, LongWritable, IntWritable> {
+	public static class Reduce extends Reducer<LongWritable, TupleWritable, LongWritable, FloatWritable> {
 
 		private final static Text word = new Text("prova");
-		private final static IntWritable one = new IntWritable(1);
+		private final static FloatWritable one = new FloatWritable(1);
 
 		public void reduce(LongWritable key, Iterable<TupleWritable> values, Context context)
 				throws IOException, InterruptedException {
@@ -87,7 +87,7 @@ public class MapReduceTest {
 		job.setMapOutputValueClass(TupleWritable.class);
 
 		job.setOutputKeyClass(LongWritable.class);
-		job.setOutputValueClass(IntWritable.class);
+		job.setOutputValueClass(FloatWritable.class);
 
 		job.setMapperClass(Map.class);
 		job.setReducerClass(Reduce.class);
